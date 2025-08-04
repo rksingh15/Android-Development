@@ -14,7 +14,7 @@ This app allows users to:
 - Clean Kotlin architecture
 
 ## Screenshots
-(Upload them on GitHub later)
+(https://github.com/rksingh15/Android-Development/tree/main/Custom_List_ViewAddDelete)
 
 ## How to Run
 Open in Android Studio and run on emulator or real device.

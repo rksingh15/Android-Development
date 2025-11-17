@@ -1,0 +1,228 @@
+package com.example.sem71
+
+import android.app.Activity
+import android.app.ComponentCaller
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.widget.*
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+// Model2,myAdapterPart2,listviewdaytwo.xml,activity_list_view_part2.xml, (main)ListView_Part2.kt
+class ListView_Part2 : AppCompatActivity() {
+    private val PICK_IMAGE = 100
+    private var selectedImageUri: Uri? = null
+
+    private lateinit var adapter1: myAdapterPartTwo
+    private lateinit var list: MutableList<Model2>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_list_view_part2)
+
+        val imageView = findViewById<ImageView>(R.id.imageView)
+        val titleInput = findViewById<EditText>(R.id.text1)
+        val descInput = findViewById<EditText>(R.id.text2)
+        val addButton = findViewById<Button>(R.id.button1)
+        val listView = findViewById<ListView>(R.id.listView)
+
+        list = mutableListOf()
+        adapter1 = myAdapterPartTwo(this, R.layout.listviewdaytwo, list)
+        listView.adapter = adapter1
+
+        imageView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, PICK_IMAGE)
+        }
+
+        addButton.setOnClickListener {
+            val title = titleInput.text.toString()
+            val desc = descInput.text.toString()
+            val imageUri = selectedImageUri // ✅ local immutable variable
+
+            if (title.isNotEmpty() && desc.isNotEmpty() && imageUri != null) {
+                val model = Model2(imageUri, title, desc)
+                list.add(model)
+                adapter1.notifyDataSetChanged()
+
+                titleInput.text.clear()
+                descInput.text.clear()
+                imageView.setImageResource(R.drawable.ic_launcher_foreground)
+                selectedImageUri = null
+            } else {
+                Toast.makeText(this, "Fill title, desc and select image", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            selectedImageUri = data?.data
+            val imageView = findViewById<ImageView>(R.id.imageView)
+            imageView.setImageURI(selectedImageUri)
+        }
+    }
+
+//    override fun onActivityResult(
+//        requestCode: Int,
+//        resultCode: Int,
+//        data: Intent?,
+//        caller: ComponentCaller
+//    ) {
+//        super.onActivityResult(requestCode, resultCode, data, caller)
+//
+//        if (requestCode==PICK_IMAGE && resultCode == Activity.RESULT_OK)
+//        {
+//            selectedImageUri = data?.data
+//            val imageView = findViewById<ImageView>(R.id.imageView)
+//            imageView.setImageURI(selectedImageUri)
+//        }
+//    }
+}
+---------------------------------------------------------------------
+package com.example.sem71
+
+
+
+import android.content.Context
+import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+
+class myAdapterPartTwo(
+    private val context: Context,
+    private val resource: Int,
+    private val items: MutableList<Model2>
+) : ArrayAdapter<Model2>(context, resource, items) {
+
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
+
+        val image: ImageView = view.findViewById(R.id.DimageView)
+        val title: TextView = view.findViewById(R.id.Dtext1)
+        val desc: TextView = view.findViewById(R.id.Dtext2)
+        val delete: Button = view.findViewById(R.id.Delbutton1)
+
+        val model = items[position]
+
+        image.setImageURI(model.imageUri)
+        title.text = model.title
+        desc.text = model.description
+
+        delete.setOnClickListener {
+            items.removeAt(position)
+            notifyDataSetChanged()
+        }
+
+        return view
+    }
+}
+==========================================================================================
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/text1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title" />
+
+            <EditText
+                android:id="@+id/text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:layout_marginTop="10dp" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
+========================================================================================================
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/DimageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="10dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Dtext1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Dtext2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/Delbutton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete" />
+</LinearLayout>
+===============================================================================================
+----------------------------------------------------------------------------------------------
+package com.example.sem71
+
+import android.net.Uri
+
+data class Model2(val imageUri: Uri, val title: String, val description: String)

@@ -1,0 +1,169 @@
+##Normal Page With ListView
+package com.example.sem71
+
+import android.os.Bundle
+import android.widget.ListView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+
+class ListView_Day1 : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_list_view_day1)
+
+//        eek class file banaya hai kotline mai Model name ka
+        // eek myAdapter bhi bana hai
+        // eek XMl bhi hai listviewDayOne.xml
+
+
+        val listView = findViewById<ListView>(R.id.listView)
+        var list = mutableListOf<Model>() // class name h Model or listof ko laga sakte hai
+        list.add(Model("FaceBook","This Is FaceBook Page",R.drawable.facebbok))
+        list.add(Model("Android","This Is Andooid Page",R.drawable.android))
+        list.add(Model("Twitter","This Is Twitter Page",R.drawable.twitter))
+        list.add(Model("Youtube","This Is Youtube Page",R.drawable.youtube))
+        list.add(Model("Whatsapp","This Is Whatsapp Page",R.drawable.whatapp))
+        list.add(Model("Skype","This Is Sky Page",R.drawable.sky))
+        list.add(Model("DSA","This Is DSA Page",R.drawable.dsa))
+        list.add(Model("JAVA","This Is Google Page",R.drawable.java))
+        list.add(Model("Youtube","This Is Youtube Page",R.drawable.youtube))
+        list.add(Model("Whatsapp","This Is Whatsapp Page",R.drawable.whatapp))
+        list.add(Model("Skype","This Is Sky Page",R.drawable.sky))
+        list.add(Model("DSA","This Is DSA Page",R.drawable.dsa))
+        list.add(Model("JAVA","This Is Google Page",R.drawable.java))
+
+        listView.adapter = myAdapter(this,R.layout.listviewdayone,list)
+
+
+
+
+
+
+
+
+    }
+}
+======================================================================================================
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".ListView_Day1">
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/listView"
+        android:layout_height="match_parent" />
+</LinearLayout>
+=====================================================================================================
+------------------------------------------------------------------------------------------------------
+package com.example.sem71
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.TextView
+//                               location of new xml file
+
+class myAdapter(var Con : Context , var res : Int , var item: List<Model>): ArrayAdapter<Model>(Con,res,item)
+{
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
+        var Lay = LayoutInflater.from(Con)
+        var view = Lay.inflate(res,null)
+
+        var image = view.findViewById<ImageView>(R.id.myImage)
+        var title = view . findViewById<TextView>(R.id.textView1)
+
+        var des = view . findViewById<TextView>(R.id.textView2)
+
+        var model = item [position]
+
+        image.setImageResource(model.image)
+
+        title.text=model.title     // Modal class ke name hai
+        des.text = model.description // Modal class ke name hai
+
+
+
+
+
+        return view
+    }
+
+}
+----------------------------------------------------------------------------------------------------------
+===========================================================================================================
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    >
+
+
+    <ImageView
+        android:id="@+id/myImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:layout_margin="5dp"
+            android:text="Title" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_margin="5dp"
+            android:text="Description" />
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+===============================================================================================================
+----------------------------------------------------------------------------------------------------------------
+package com.example.sem71
+
+class Model (val title:String,val description:String,val image:Int){
+}
+-----------------------------------------------------------------------------------------
+
+

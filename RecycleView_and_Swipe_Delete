@@ -1,0 +1,155 @@
+package com.example.sem71
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
+//LinearPojo class , custom recycle list , AdapterRecycler,
+class RecyclerViewExampleOne : AppCompatActivity() {
+    lateinit var list: MutableList<LinearPojo>
+    lateinit var adapterRecycler: AdapterRecycler
+
+    lateinit var recyclerView: RecyclerView  // ye jo Xml me banaya hai wo yaha likhna hai
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_recycler_view_example_one)
+
+        linearListData()
+        initRecyclerView()
+
+
+
+    }
+    private fun linearListData() {
+        list = mutableListOf()
+
+        list.add(LinearPojo("Version 1", "1"))
+        list.add(LinearPojo("Version 2", "2"))
+        list.add(LinearPojo("Version 3", "3"))
+        list.add(LinearPojo("Version 4", "4"))
+        list.add(LinearPojo("Version 5", "5"))
+        list.add(LinearPojo("Version 6", "6"))
+        list.add(LinearPojo("Version 7", "7"))
+        list.add(LinearPojo("Version 8", "8"))
+        list.add(LinearPojo("Version 9", "9"))
+        list.add(LinearPojo("Version 10", "10"))
+        list.add(LinearPojo("Apple", "58"))
+        list.add(LinearPojo("Banaana 7", "45"))
+        list.add(LinearPojo("Orange 8", "63"))
+        list.add(LinearPojo("Green 9", "95"))
+        list.add(LinearPojo("Mango 10", "66"))
+    }
+    private fun initRecyclerView() {
+            recyclerView = findViewById(R.id.recyclerViewLinear)
+            recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false )
+            adapterRecycler = AdapterRecycler(this, list)
+            recyclerView.adapter = adapterRecycler
+
+
+        ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    list.removeAt(position)
+                    adapterRecycler?.notifyItemRemoved(position)
+
+                }
+            }).attachToRecyclerView(recyclerView)
+
+
+
+
+    }
+-------------------------------------------------------------------------------
+  =====================================================================================
+  <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLinear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>
+  ===========================================================================================
+  package com.example.sem71
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+
+class AdapterRecycler(private val context: Context, private val list1: MutableList<LinearPojo>) : RecyclerView.Adapter<AdapterRecycler.MyHolder>() {
+
+
+    // 🔹 Ye ek row (item) ko hold karta hai
+    class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val versionName: TextView = itemView.findViewById(R.id.version_name)
+        val version: TextView = itemView.findViewById(R.id.version)
+    }
+
+//     ye row banta hai
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.custom_recycle_list, parent, false)
+        return MyHolder(view)
+    }
+// ye row me data set karta hai
+    override fun onBindViewHolder(holder: MyHolder, position: Int) {
+        val model = list1[position]
+        holder.versionName.text = model.versionName
+        holder.version.text = model.version
+    }
+
+    override fun getItemCount(): Int {
+        return list1.size
+    }
+//    override fun onCreateViewHolder(
+//        parent: ViewGroup,
+//        viewType: Int
+//    ): AdapterRecycler.MyHolder {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onBindViewHolder(holder: AdapterRecycler.MyHolder, position: Int) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun getItemCount(): Int {
+//        TODO("Not yet implemented")
+//    }
+}
+-----------------------------------------------------------------------
+  package com.example.sem71
+
+import android.R
+
+class LinearPojo(val versionName: String , val version:String ) {
+}---------------------------------------------------------------------------------
+  
+
+
+}=====================
